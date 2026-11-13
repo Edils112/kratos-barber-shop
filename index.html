@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kratos Barber Shop · Reserva tu cita</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="theme-color" content="#15110c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -266,12 +268,119 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .fact+.fact{border-left:0;border-top:1px solid var(--line)}
   .panelbox{padding:22px}
 }
+
+/* Botón del menú móvil Kratos */
+.nav-toggle {
+  display: none;
+  background: #15110c;
+  color: #d6a64f;
+  border: 1px solid #d6a64f;
+  border-radius: 8px;
+  padding: 8px 13px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-toggle:hover {
+  background: #292015;
+}
+
+/* Menú adaptable a celulares */
+@media (max-width: 640px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+  .bar {
+  flex-wrap: wrap;
+  height: auto;
+  }
+  #nav {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  #nav.open {
+    display: flex;
+  }
+
+  #nav a,
+  #nav button {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* Secciones comerciales de Kratos */
+.landing-benefits {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 30px 0;
+}
+
+.landing-benefits .fact {
+  padding: 24px;
+  border: 1px solid rgba(214, 166, 79, .25);
+  border-radius: 14px;
+  background: #1b1813;
+}
+
+.landing-benefits h3 {
+  color: #d6a64f;
+  margin: 0 0 12px;
+}
+
+.landing-benefits p {
+  color: #c5c0b7;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.landing-cta {
+  text-align: center;
+  padding: 38px 24px;
+  margin: 30px 0;
+  border: 1px solid rgba(214, 166, 79, .35);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #211b12, #15110c);
+}
+
+.landing-cta h2 {
+  color: #d6a64f;
+  margin-top: 0;
+}
+
+.landing-cta .actions {
+  justify-content: center;
+}
+
+@media (max-width: 700px) {
+  .landing-benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-cta {
+    padding: 28px 16px;
+  }
+}
+
+
 </style>
 </head>
 <body>
 <header>
   <div class="wrap bar">
     <button class="brand" onclick="home()" aria-label="Kratos Barber Shop, inicio"><span class="pole"></span><span class="t"><b>Kratos</b><small>Barber Shop</small></span></button>
+    <button id="navToggle" class="nav-toggle" type="button"
+    aria-label="Abrir menú" aria-expanded="false"
+    onclick="toggleNavMenu()">☰</button>
     <nav id="nav" aria-label="Principal"></nav>
   </div>
 </header>
@@ -512,6 +621,19 @@ async function logout(){
 }
 function goShop(id,barberId){state.b=barberId?{barberId}:{};go('shop',{id},true);}
 
+function toggleNavMenu() {
+  const nav = document.getElementById('nav');
+  const toggle = document.getElementById('navToggle');
+
+  if (!nav || !toggle) return;
+
+  const abierto = nav.classList.toggle('open');
+
+  toggle.setAttribute('aria-expanded', abierto);
+  toggle.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+  toggle.textContent = abierto ? '✕' : '☰';
+}
+
 function navHtml(u){
   const on=v=>state.view===v?'on':'';
   const emp=`<button class="${on('business')}" onclick="go('business')">Empresas</button>`;
@@ -547,29 +669,106 @@ const views={};
 views.welcome=()=>`
 <section class="hero">
   <div>
-    <h1>Tu próxima cita, en segundos</h1>
-    <p class="lead">Elige la barbería y el barbero, mira horarios y precios claros y reserva sin llamar a nadie.</p>
+    <span class="chip">KRATOS BARBER SHOP</span>
+    <h1>Haz crecer tu barbería. Simplifica tus citas.</h1>
+    <p class="lead">
+      Administra tus servicios, barberos y reservas desde un solo lugar.
+      Ofrece a tus clientes una forma rápida y sencilla de reservar,
+      sin llamadas ni complicaciones.
+    </p>
+
     <div class="actions">
-      <button class="btn primary" onclick="go('login')">${I.user}Iniciar sesión</button>
-      <button class="btn" onclick="go('register')">${I.plus}Registrarse</button>
-      <button class="btn quiet" onclick="goRegShop()">${I.shop}Registrar mi empresa</button>
+      <button class="btn primary" onclick="goRegShop()">
+        ${I.shop}Registrar mi barbería
+      </button>
+      <button class="btn" onclick="go('login')">
+        ${I.user}Iniciar sesión
+      </button>
+      <button class="btn quiet" onclick="go('register')">
+        ${I.plus}Crear cuenta de cliente
+      </button>
     </div>
   </div>
+
   <aside class="ticket" aria-label="Ejemplo de reserva">
     <h3>Kratos Barber Shop</h3>
-    <div class="sub">Cra. 13 #85-20, Chapinero</div>
-    <div class="tk"><span>Barbero</span><span>Andrés Rojas</span></div>
-    <div class="tk"><span>Corte y barba</span><span>${cop(55000)}</span></div>
-    <div class="tk"><span>Sábado</span><span>10:30 a. m.</span></div>
-    <div class="tk tot"><span>Total</span><span>${cop(55000)}</span></div>
-    <div class="pays"><span class="chip">Efectivo</span><span class="chip">Tarjeta</span><span class="chip">Nequi</span><span class="chip">Daviplata</span><span class="chip">Transferencia</span></div>
+    <div class="sub">Ejemplo de una reserva</div>
+
+    <div class="tk">
+      <span>Barbero</span>
+      <span>Andrés Rojas</span>
+    </div>
+
+    <div class="tk">
+      <span>Servicio</span>
+      <span>Corte y barba</span>
+    </div>
+
+    <div class="tk">
+      <span>Fecha</span>
+      <span>Sábado, 10:30 a. m.</span>
+    </div>
+
+    <div class="tk tot">
+      <span>Total</span>
+      <span>${cop(55000)}</span>
+    </div>
+
+    <div class="pays">
+      <span class="chip">Efectivo</span>
+      <span class="chip">Bre-B</span>
+    </div>
   </aside>
 </section>
+
+<section class="landing-benefits">
+  <div class="fact">
+    <h3>Agenda organizada</h3>
+    <p>Consulta y administra las citas de tu barbería en un mismo lugar.</p>
+  </div>
+
+  <div class="fact">
+    <h3>Control de servicios</h3>
+    <p>Agrega servicios, modifica precios y configura sus duraciones.</p>
+  </div>
+
+  <div class="fact">
+    <h3>Más comodidad</h3>
+    <p>Permite que tus clientes consulten horarios y reserven fácilmente.</p>
+  </div>
+</section>
+
+<section class="landing-cta">
+  <h2>¿Tienes una barbería?</h2>
+  <p class="lead">
+    Da el siguiente paso hacia una administración más organizada.
+    Registra tu negocio y comienza a gestionar tus reservas.
+  </p>
+  <div class="actions">
+    <button class="btn primary" onclick="goRegShop()">
+      ${I.shop}Comenzar ahora
+    </button>
+    <button class="btn quiet" onclick="go('register')">
+      Reservar como cliente
+    </button>
+  </div>
+</section>
+
 <div class="facts">
-  <div class="fact"><b>${db.shops.length}</b><span>barberías para elegir</span></div>
-  <div class="fact"><b>${db.shops.reduce((a,s)=>a+s.barbers.length,0)}</b><span>barberos con agenda</span></div>
-  <div class="fact"><b>5</b><span>formas de pago</span></div>
-</div>`;
+  <div class="fact">
+    <b>${db.shops.length}</b>
+    <span>barberías registradas</span>
+  </div>
+  <div class="fact">
+    <b>${db.shops.reduce((a,s)=>a+s.barbers.length,0)}</b>
+    <span>barberos registrados</span>
+  </div>
+  <div class="fact">
+    <b>2</b>
+    <span>formas de pago</span>
+  </div>
+</div>
+`;
 
 views.login=()=>`
 <div class="formbox">
@@ -659,7 +858,7 @@ views.business=()=>{
     [I.cal,'Agenda por barbero','Cada barbero tiene sus propios horarios. Si un turno se ocupa, deja de aparecer para los demás clientes.'],
     [I.shield,'Cero dobles reservas','El sistema tiene en cuenta cuánto dura cada servicio y bloquea el tiempo que se cruza con otra cita.'],
     [I.tag,'Servicios y precios claros','Publica tus servicios con precio y duración. El cliente sabe cuánto paga antes de reservar.'],
-    [I.card,'Todas las formas de pago','El cliente indica si pagará con efectivo, tarjeta, Nequi, Daviplata o transferencia.'],
+    [I.card,'Todas las formas de pago','El cliente indica si pagará con efectivo o Bre-b para transferencias en general.'],
     [I.chart,'Panel de tu barbería','Mira las citas por atender, tus ventas reservadas y marca cada cita como atendida o cancelada.'],
     [I.search,'Aparece en la lista de barberías','Los clientes te encuentran por nombre, zona o barbero, y ven si estás abierto ahora.']
   ];
@@ -763,7 +962,7 @@ function freeSlots(shop,b){
   }
   return out;
 }
-const PAY=['Efectivo','Tarjeta','Nequi','Daviplata','Transferencia'];
+const PAY=['Efectivo','Bre-B'];
 
 views.shop=()=>{
   const shop=db.shops.find(s=>s.id===state.p.id);if(!shop)return views.shops();
@@ -1685,6 +1884,13 @@ async function deleteService(shopId,serviceId){
 function render(){
   const y=window.scrollY,u=me();
   $('#nav').innerHTML=navHtml(u);
+  document.getElementById('nav')?.classList.remove('open');
+  const navToggle = document.getElementById('navToggle');
+  if (navToggle) {
+  navToggle.textContent = '☰';
+  navToggle.setAttribute('aria-expanded', 'false');
+  navToggle.setAttribute('aria-label', 'Abrir menú');
+}
   $('#app').innerHTML=(views[state.view]||views.welcome)();
   if(state.view==='shops')drawShops();
   window.scrollTo(0,y);
